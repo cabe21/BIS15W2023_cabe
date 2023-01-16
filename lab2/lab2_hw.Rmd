@@ -1,6 +1,6 @@
 ---
 title: "Lab 2 Homework"
-author: "Please Add Your Name Here"
+author: "Chris Abe"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -14,9 +14,9 @@ Answer the following questions and complete the exercises in RMarkdown. Please e
 Make sure to use the formatting conventions of RMarkdown to make your report neat and clean!  
 
 1. What is a vector in R?  
-
+  A vector is a series of numbers that are attached to a certain object usually in a list. These can be numeric, characteristics, etc. 
 2. What is a data matrix in R?  
-
+A data matrix in R is when  you have something like a vector complied into rows and columns.
 3. Below are data collected by three scientists (Jill, Steve, Susan in order) measuring temperatures of eight hot springs. Run this code chunk to create the vectors.  
 ```{r}
 spring_1 <- c(36.25, 35.40, 35.30)
