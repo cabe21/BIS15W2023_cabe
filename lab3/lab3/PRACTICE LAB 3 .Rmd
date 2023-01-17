@@ -1,0 +1,61 @@
+---
+title: "LAB THREE PRACTICE"
+output: html_document
+date: "2023-01-17"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+plants_heights <- c(30.7, 37.6, 28.4, NA, 33.2)
+```
+
+```{r}
+mass <- c(1.4, 5.2, 3.7, NA, 4.6)
+```
+
+```{r}
+plant_data <- c(plants_heights, mass)
+plant_data
+```
+```{r}
+plant_data_matrix <- matrix(plant_data, nrow=5, byrow=F)
+plant_data_matrix
+```
+```{r}
+region <- c("Height", "Mass")
+region
+```
+
+```{r}
+titles <- c("plant_1", "plant_2", "plant_3", "plant_4", "plant 5")
+titles
+```
+
+```{r}
+colnames(plant_data_matrix) <- region
+```
+
+```{r}
+rownames(plant_data_matrix) <- titles
+```
+
+```{r}
+plant_data_matrix
+```
+```{r}
+means
+
+```
+```{r}
+mean(plants, mass, na.rm=T)
+```
+```{r}
+new_plant_data_matrix<- cbind(plant_data_matrix, Means)
+new_spring_temperature_matrix
+```
+
