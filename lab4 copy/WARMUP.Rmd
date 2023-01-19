@@ -1,0 +1,39 @@
+---
+title: "Warm Up 1/19/23"
+output: html_document
+date: "2023-01-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("tidyverse")
+```
+
+```{r}
+library(palmerpenguins)
+```
+
+```{r}
+penguins <- palmerpenguins::penguins
+```
+
+```{r}
+dim(penguins)
+```
+```{r}
+names(penguins)
+```
+
+```{r}
+mean(penguins$body_mass_g, na.rm=T)
+```
+```{r}
+table(penguins$island)
+```
+```{r}
+anyNA(penguins)
+```
+
