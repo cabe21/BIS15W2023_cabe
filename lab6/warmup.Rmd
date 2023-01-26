@@ -1,0 +1,36 @@
+---
+title: "WARMUP LAB 6"
+output: html_document
+date: "2023-01-26"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. A pipe is a command that enables you to use multiple commands at the same time. It spits out the result of one code to the next 
+2. On mac it is command+shift+ M 
+3. Select is for columns, filter is for rows, and mutate is to change lots of things or everything. It is like the nuclear option 
+3. the first part of the midterm is by yourself and graded for effor the larger portion of the midterm is for group work and that is graded on accuracy 
+ 
+ WARMUP: 
+
+```{r}
+library("tidyverse")
+library("janitor")
+```
+
+```{r}
+animals <- readr::read_csv("data/ecs21351-sup-0003-SupplementS1.csv", skip = 2) 
+```
+```{r}
+animals <- janitor::clean_names(animals)
+```
+
+```{r}
+summary(animals)
+```
+```{r}
+
+```
+
