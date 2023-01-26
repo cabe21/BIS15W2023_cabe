@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2022-02-28" />
+<meta name="date" content="2023-01-25" />
 
 <title>dplyr Superhero</title>
 
@@ -1353,6 +1353,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 .main-container {
   max-width: 940px;
@@ -1374,6 +1375,9 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+details > summary > p:only-child {
+  display: inline;
+}
 pre code {
   padding: 0;
 }
@@ -1393,8 +1397,8 @@ pre code {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -1402,16 +1406,9 @@ pre code {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -1530,7 +1527,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">dplyr Superhero</h1>
-<h4 class="date">2022-02-28</h4>
+<h4 class="date">2023-01-25</h4>
 
 </div>
 
@@ -1560,14 +1557,14 @@ homework will be to knit and push this file to your repository.</p>
 <div id="load-the-tidyverse" class="section level2">
 <h2>Load the tidyverse</h2>
 <pre class="r"><code>library(&quot;tidyverse&quot;)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
-<pre><code>## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-## ✓ tibble  3.1.6     ✓ dplyr   1.0.8
-## ✓ tidyr   1.2.0     ✓ stringr 1.4.0
-## ✓ readr   2.1.2     ✓ forcats 0.5.1</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+## ✔ ggplot2 3.4.0      ✔ purrr   1.0.0 
+## ✔ tibble  3.1.8      ✔ dplyr   1.0.10
+## ✔ tidyr   1.2.1      ✔ stringr 1.5.0 
+## ✔ readr   2.1.3      ✔ forcats 0.5.2 
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 </div>
 <div id="load-the-superhero-data" class="section level2">
 <h2>Load the superhero data</h2>
@@ -1603,25 +1600,55 @@ intact.</p>
 <li>Some of the names used in the <code>superhero_info</code> data are
 problematic so you should rename them here.</li>
 </ol>
+<pre class="r"><code>names(superhero_info)</code></pre>
+<pre><code>##  [1] &quot;name&quot;       &quot;Gender&quot;     &quot;Eye color&quot;  &quot;Race&quot;       &quot;Hair color&quot;
+##  [6] &quot;Height&quot;     &quot;Publisher&quot;  &quot;Skin color&quot; &quot;Alignment&quot;  &quot;Weight&quot;</code></pre>
+<pre class="r"><code>superhero_info %&gt;%
+  mutate_all(tolower)</code></pre>
+<pre><code>## # A tibble: 734 × 10
+##    name       Gender Eye c…¹ Race  Hair …² Height Publi…³ Skin …⁴ Align…⁵ Weight
+##    &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt; 
+##  1 a-bomb     male   yellow  human no hair 203    marvel… &lt;NA&gt;    good    441   
+##  2 abe sapien male   blue    icth… no hair 191    dark h… blue    good    65    
+##  3 abin sur   male   blue    unga… no hair 185    dc com… red     good    90    
+##  4 abominati… male   green   huma… no hair 203    marvel… &lt;NA&gt;    bad     441   
+##  5 abraxas    male   blue    cosm… black   &lt;NA&gt;   marvel… &lt;NA&gt;    bad     &lt;NA&gt;  
+##  6 absorbing… male   blue    human no hair 193    marvel… &lt;NA&gt;    bad     122   
+##  7 adam monr… male   blue    &lt;NA&gt;  blond   &lt;NA&gt;   nbc - … &lt;NA&gt;    good    &lt;NA&gt;  
+##  8 adam stra… male   blue    human blond   185    dc com… &lt;NA&gt;    good    88    
+##  9 agent 13   female blue    &lt;NA&gt;  blond   173    marvel… &lt;NA&gt;    good    61    
+## 10 agent bob  male   brown   human brown   178    marvel… &lt;NA&gt;    good    81    
+## # … with 724 more rows, and abbreviated variable names ¹​`Eye color`,
+## #   ²​`Hair color`, ³​Publisher, ⁴​`Skin color`, ⁵​Alignment</code></pre>
+<pre class="r"><code>superhero_info_new &lt;- rename(superhero_info, 
+                             gender=&quot;Gender&quot;, 
+                             eye_color=&quot;Eye color&quot;, 
+                             race=&quot;Race&quot;, 
+                             hair_color=&quot;Hair color&quot;, 
+                             height=&quot;Height&quot;, 
+                             publisher=&quot;Publisher&quot;, 
+                             skin_color=&quot;Skin color&quot;, 
+                             alignment=&quot;Alignment&quot;, 
+                             weight=&quot;Weight&quot;)</code></pre>
 <p>Yikes! <code>superhero_powers</code> has a lot of variables that are
 poorly named. We need some R superpowers…</p>
 <pre class="r"><code>head(superhero_powers)</code></pre>
 <pre><code>## # A tibble: 6 × 168
-##   hero_names  Agility `Accelerated Healing` `Lantern Power Ri…` `Dimensional A…`
-##   &lt;chr&gt;       &lt;lgl&gt;   &lt;lgl&gt;                 &lt;lgl&gt;               &lt;lgl&gt;           
-## 1 3-D Man     TRUE    FALSE                 FALSE               FALSE           
-## 2 A-Bomb      FALSE   TRUE                  FALSE               FALSE           
-## 3 Abe Sapien  TRUE    TRUE                  FALSE               FALSE           
-## 4 Abin Sur    FALSE   FALSE                 TRUE                FALSE           
-## 5 Abomination FALSE   TRUE                  FALSE               FALSE           
-## 6 Abraxas     FALSE   FALSE                 FALSE               TRUE            
-## # … with 163 more variables: `Cold Resistance` &lt;lgl&gt;, Durability &lt;lgl&gt;,
-## #   Stealth &lt;lgl&gt;, `Energy Absorption` &lt;lgl&gt;, Flight &lt;lgl&gt;,
-## #   `Danger Sense` &lt;lgl&gt;, `Underwater breathing` &lt;lgl&gt;, Marksmanship &lt;lgl&gt;,
-## #   `Weapons Master` &lt;lgl&gt;, `Power Augmentation` &lt;lgl&gt;,
-## #   `Animal Attributes` &lt;lgl&gt;, Longevity &lt;lgl&gt;, Intelligence &lt;lgl&gt;,
-## #   `Super Strength` &lt;lgl&gt;, Cryokinesis &lt;lgl&gt;, Telepathy &lt;lgl&gt;,
-## #   `Energy Armor` &lt;lgl&gt;, `Energy Blasts` &lt;lgl&gt;, Duplication &lt;lgl&gt;, …</code></pre>
+##   hero_…¹ Agility Accel…² Lante…³ Dimen…⁴ Cold …⁵ Durab…⁶ Stealth Energ…⁷ Flight
+##   &lt;chr&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt; 
+## 1 3-D Man TRUE    FALSE   FALSE   FALSE   FALSE   FALSE   FALSE   FALSE   FALSE 
+## 2 A-Bomb  FALSE   TRUE    FALSE   FALSE   FALSE   TRUE    FALSE   FALSE   FALSE 
+## 3 Abe Sa… TRUE    TRUE    FALSE   FALSE   TRUE    TRUE    FALSE   FALSE   FALSE 
+## 4 Abin S… FALSE   FALSE   TRUE    FALSE   FALSE   FALSE   FALSE   FALSE   FALSE 
+## 5 Abomin… FALSE   TRUE    FALSE   FALSE   FALSE   FALSE   FALSE   FALSE   FALSE 
+## 6 Abraxas FALSE   FALSE   FALSE   TRUE    FALSE   FALSE   FALSE   FALSE   TRUE  
+## # … with 158 more variables: `Danger Sense` &lt;lgl&gt;,
+## #   `Underwater breathing` &lt;lgl&gt;, Marksmanship &lt;lgl&gt;, `Weapons Master` &lt;lgl&gt;,
+## #   `Power Augmentation` &lt;lgl&gt;, `Animal Attributes` &lt;lgl&gt;, Longevity &lt;lgl&gt;,
+## #   Intelligence &lt;lgl&gt;, `Super Strength` &lt;lgl&gt;, Cryokinesis &lt;lgl&gt;,
+## #   Telepathy &lt;lgl&gt;, `Energy Armor` &lt;lgl&gt;, `Energy Blasts` &lt;lgl&gt;,
+## #   Duplication &lt;lgl&gt;, `Size Changing` &lt;lgl&gt;, `Density Control` &lt;lgl&gt;,
+## #   Stamina &lt;lgl&gt;, `Astral Travel` &lt;lgl&gt;, `Audio Control` &lt;lgl&gt;, …</code></pre>
 </div>
 <div id="janitor" class="section level2">
 <h2><code>janitor</code></h2>
@@ -1636,7 +1663,12 @@ library.</p>
 ##     chisq.test, fisher.test</code></pre>
 <p>The <code>clean_names</code> function takes care of everything in one
 line! Now that’s a superpower!</p>
-<pre class="r"><code>superhero_powers &lt;- janitor::clean_names(superhero_powers)</code></pre>
+<pre class="r"><code>superhero_powers &lt;- janitor::clean_names(superhero_powers)
+
+superhero_info &lt;- janitor::clean_names(superhero_info)</code></pre>
+<pre class="r"><code>names(superhero_info)</code></pre>
+<pre><code>##  [1] &quot;name&quot;       &quot;gender&quot;     &quot;eye_color&quot;  &quot;race&quot;       &quot;hair_color&quot;
+##  [6] &quot;height&quot;     &quot;publisher&quot;  &quot;skin_color&quot; &quot;alignment&quot;  &quot;weight&quot;</code></pre>
 </div>
 <div id="tabyl" class="section level2">
 <h2><code>tabyl</code></h2>
@@ -1646,9 +1678,32 @@ produces counts but also percentages. Very handy! Let’s use it to
 explore the proportion of good guys and bad guys in the
 <code>superhero_info</code> data.</p>
 <pre class="r"><code>#tabyl(superhero_info, alignment)</code></pre>
+<pre class="r"><code>tabyl(superhero_info, alignment)</code></pre>
+<pre><code>##  alignment   n     percent valid_percent
+##        bad 207 0.282016349    0.28473177
+##       good 496 0.675749319    0.68225585
+##    neutral  24 0.032697548    0.03301238
+##       &lt;NA&gt;   7 0.009536785            NA</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Notice that we have some neutral superheros! Who are they?</li>
 </ol>
+<pre class="r"><code>superhero_info %&gt;% 
+  filter(alignment == &quot;neutral&quot;) %&gt;% 
+  select(name, alignment)</code></pre>
+<pre><code>## # A tibble: 24 × 2
+##    name         alignment
+##    &lt;chr&gt;        &lt;chr&gt;    
+##  1 Bizarro      neutral  
+##  2 Black Flash  neutral  
+##  3 Captain Cold neutral  
+##  4 Copycat      neutral  
+##  5 Deadpool     neutral  
+##  6 Deathstroke  neutral  
+##  7 Etrigan      neutral  
+##  8 Galactus     neutral  
+##  9 Gladiator    neutral  
+## 10 Indigo       neutral  
+## # … with 14 more rows</code></pre>
 </div>
 <div id="superhero_info" class="section level2">
 <h2><code>superhero_info</code></h2>
@@ -1657,41 +1712,284 @@ explore the proportion of good guys and bad guys in the
 and “race”. How would you isolate these variables from
 <code>superhero_info</code>?</li>
 </ol>
+<pre class="r"><code>superhero_info %&gt;% 
+  select(name, alignment, race)</code></pre>
+<pre><code>## # A tibble: 734 × 3
+##    name          alignment race             
+##    &lt;chr&gt;         &lt;chr&gt;     &lt;chr&gt;            
+##  1 A-Bomb        good      Human            
+##  2 Abe Sapien    good      Icthyo Sapien    
+##  3 Abin Sur      good      Ungaran          
+##  4 Abomination   bad       Human / Radiation
+##  5 Abraxas       bad       Cosmic Entity    
+##  6 Absorbing Man bad       Human            
+##  7 Adam Monroe   good      &lt;NA&gt;             
+##  8 Adam Strange  good      Human            
+##  9 Agent 13      good      &lt;NA&gt;             
+## 10 Agent Bob     good      Human            
+## # … with 724 more rows</code></pre>
 </div>
 <div id="not-human" class="section level2">
 <h2>Not Human</h2>
 <ol start="4" style="list-style-type: decimal">
 <li>List all of the superheros that are not human.</li>
 </ol>
+<pre class="r"><code>superhero_info %&gt;% 
+  select(name, alignment, race) %&gt;%   
+  filter(race != &quot;Human&quot;)</code></pre>
+<pre><code>## # A tibble: 222 × 3
+##    name         alignment race             
+##    &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;            
+##  1 Abe Sapien   good      Icthyo Sapien    
+##  2 Abin Sur     good      Ungaran          
+##  3 Abomination  bad       Human / Radiation
+##  4 Abraxas      bad       Cosmic Entity    
+##  5 Ajax         bad       Cyborg           
+##  6 Alien        bad       Xenomorph XX121  
+##  7 Amazo        bad       Android          
+##  8 Angel        good      Vampire          
+##  9 Angel Dust   good      Mutant           
+## 10 Anti-Monitor bad       God / Eternal    
+## # … with 212 more rows</code></pre>
 </div>
 <div id="good-and-evil" class="section level2">
 <h2>Good and Evil</h2>
 <ol start="5" style="list-style-type: decimal">
-<li><p>Let’s make two different data frames, one focused on the “good
-guys” and another focused on the “bad guys”.</p></li>
-<li><p>For the good guys, use the <code>tabyl</code> function to
-summarize their “race”.</p></li>
-<li><p>Among the good guys, Who are the Asgardians?</p></li>
-<li><p>Among the bad guys, who are the male humans over 200 inches in
-height?</p></li>
-<li><p>OK, so are there more good guys or bad guys that are bald
-(personal interest)?</p></li>
-<li><p>Let’s explore who the really “big” superheros are. In the
+<li>Let’s make two different data frames, one focused on the “good guys”
+and another focused on the “bad guys”.</li>
+</ol>
+<pre class="r"><code>good_guys &lt;- superhero_info %&gt;% 
+              filter(alignment == &quot;good&quot;)
+good_guys</code></pre>
+<pre><code>## # A tibble: 496 × 10
+##    name       gender eye_c…¹ race  hair_…² height publi…³ skin_…⁴ align…⁵ weight
+##    &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt;
+##  1 A-Bomb     Male   yellow  Human No Hair    203 Marvel… &lt;NA&gt;    good       441
+##  2 Abe Sapien Male   blue    Icth… No Hair    191 Dark H… blue    good        65
+##  3 Abin Sur   Male   blue    Unga… No Hair    185 DC Com… red     good        90
+##  4 Adam Monr… Male   blue    &lt;NA&gt;  Blond       NA NBC - … &lt;NA&gt;    good        NA
+##  5 Adam Stra… Male   blue    Human Blond      185 DC Com… &lt;NA&gt;    good        88
+##  6 Agent 13   Female blue    &lt;NA&gt;  Blond      173 Marvel… &lt;NA&gt;    good        61
+##  7 Agent Bob  Male   brown   Human Brown      178 Marvel… &lt;NA&gt;    good        81
+##  8 Agent Zero Male   &lt;NA&gt;    &lt;NA&gt;  &lt;NA&gt;       191 Marvel… &lt;NA&gt;    good       104
+##  9 Alan Scott Male   blue    &lt;NA&gt;  Blond      180 DC Com… &lt;NA&gt;    good        90
+## 10 Alex Wool… Male   &lt;NA&gt;    &lt;NA&gt;  &lt;NA&gt;        NA NBC - … &lt;NA&gt;    good        NA
+## # … with 486 more rows, and abbreviated variable names ¹​eye_color, ²​hair_color,
+## #   ³​publisher, ⁴​skin_color, ⁵​alignment</code></pre>
+<pre class="r"><code>bad_guys &lt;- superhero_info %&gt;% 
+              filter(alignment == &quot;bad&quot;)
+bad_guys</code></pre>
+<pre><code>## # A tibble: 207 × 10
+##    name       gender eye_c…¹ race  hair_…² height publi…³ skin_…⁴ align…⁵ weight
+##    &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt;
+##  1 Abominati… Male   green   Huma… No Hair    203 Marvel… &lt;NA&gt;    bad        441
+##  2 Abraxas    Male   blue    Cosm… Black       NA Marvel… &lt;NA&gt;    bad         NA
+##  3 Absorbing… Male   blue    Human No Hair    193 Marvel… &lt;NA&gt;    bad        122
+##  4 Air-Walker Male   blue    &lt;NA&gt;  White      188 Marvel… &lt;NA&gt;    bad        108
+##  5 Ajax       Male   brown   Cybo… Black      193 Marvel… &lt;NA&gt;    bad         90
+##  6 Alex Merc… Male   &lt;NA&gt;    Human &lt;NA&gt;        NA Wildst… &lt;NA&gt;    bad         NA
+##  7 Alien      Male   &lt;NA&gt;    Xeno… No Hair    244 Dark H… black   bad        169
+##  8 Amazo      Male   red     Andr… &lt;NA&gt;       257 DC Com… &lt;NA&gt;    bad        173
+##  9 Ammo       Male   brown   Human Black      188 Marvel… &lt;NA&gt;    bad        101
+## 10 Angela     Female &lt;NA&gt;    &lt;NA&gt;  &lt;NA&gt;        NA Image … &lt;NA&gt;    bad         NA
+## # … with 197 more rows, and abbreviated variable names ¹​eye_color, ²​hair_color,
+## #   ³​publisher, ⁴​skin_color, ⁵​alignment</code></pre>
+<ol start="6" style="list-style-type: decimal">
+<li>For the good guys, use the <code>tabyl</code> function to summarize
+their “race”.</li>
+</ol>
+<pre class="r"><code>tabyl(good_guys, race)</code></pre>
+<pre><code>##               race   n     percent valid_percent
+##              Alien   3 0.006048387   0.010752688
+##              Alpha   5 0.010080645   0.017921147
+##             Amazon   2 0.004032258   0.007168459
+##            Android   4 0.008064516   0.014336918
+##             Animal   2 0.004032258   0.007168459
+##          Asgardian   3 0.006048387   0.010752688
+##          Atlantean   4 0.008064516   0.014336918
+##         Bolovaxian   1 0.002016129   0.003584229
+##              Clone   1 0.002016129   0.003584229
+##             Cyborg   3 0.006048387   0.010752688
+##           Demi-God   2 0.004032258   0.007168459
+##              Demon   3 0.006048387   0.010752688
+##            Eternal   1 0.002016129   0.003584229
+##     Flora Colossus   1 0.002016129   0.003584229
+##        Frost Giant   1 0.002016129   0.003584229
+##      God / Eternal   6 0.012096774   0.021505376
+##             Gungan   1 0.002016129   0.003584229
+##              Human 148 0.298387097   0.530465950
+##    Human / Altered   2 0.004032258   0.007168459
+##     Human / Cosmic   2 0.004032258   0.007168459
+##  Human / Radiation   8 0.016129032   0.028673835
+##         Human-Kree   2 0.004032258   0.007168459
+##      Human-Spartoi   1 0.002016129   0.003584229
+##       Human-Vulcan   1 0.002016129   0.003584229
+##    Human-Vuldarian   1 0.002016129   0.003584229
+##      Icthyo Sapien   1 0.002016129   0.003584229
+##            Inhuman   4 0.008064516   0.014336918
+##    Kakarantharaian   1 0.002016129   0.003584229
+##         Kryptonian   4 0.008064516   0.014336918
+##            Martian   1 0.002016129   0.003584229
+##          Metahuman   1 0.002016129   0.003584229
+##             Mutant  46 0.092741935   0.164874552
+##     Mutant / Clone   1 0.002016129   0.003584229
+##             Planet   1 0.002016129   0.003584229
+##             Saiyan   1 0.002016129   0.003584229
+##           Symbiote   3 0.006048387   0.010752688
+##           Talokite   1 0.002016129   0.003584229
+##         Tamaranean   1 0.002016129   0.003584229
+##            Ungaran   1 0.002016129   0.003584229
+##            Vampire   2 0.004032258   0.007168459
+##     Yoda&#39;s species   1 0.002016129   0.003584229
+##      Zen-Whoberian   1 0.002016129   0.003584229
+##               &lt;NA&gt; 217 0.437500000            NA</code></pre>
+<ol start="7" style="list-style-type: decimal">
+<li>Among the good guys, Who are the Asgardians?</li>
+</ol>
+<pre class="r"><code>good_guys %&gt;% 
+  select(name, race) %&gt;% 
+  filter(race == &quot;Asgardian&quot;)</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##   name      race     
+##   &lt;chr&gt;     &lt;chr&gt;    
+## 1 Sif       Asgardian
+## 2 Thor      Asgardian
+## 3 Thor Girl Asgardian</code></pre>
+<ol start="8" style="list-style-type: decimal">
+<li>Among the bad guys, who are the male humans over 200 inches in
+height?</li>
+</ol>
+<pre class="r"><code>bad_guys %&gt;% 
+  select(name, gender, race, height) %&gt;% 
+  filter(gender == &quot;Male&quot; &amp; race == &quot;Human&quot; &amp; height &gt;200)</code></pre>
+<pre><code>## # A tibble: 5 × 4
+##   name        gender race  height
+##   &lt;chr&gt;       &lt;chr&gt;  &lt;chr&gt;  &lt;dbl&gt;
+## 1 Bane        Male   Human    203
+## 2 Doctor Doom Male   Human    201
+## 3 Kingpin     Male   Human    201
+## 4 Lizard      Male   Human    203
+## 5 Scorpion    Male   Human    211</code></pre>
+<ol start="9" style="list-style-type: decimal">
+<li>OK, so are there more good guys or bad guys that are bald (personal
+interest)?</li>
+</ol>
+<pre class="r"><code>bad_guys %&gt;% 
+  select(name, hair_color) %&gt;% 
+  filter(hair_color == &quot;No Hair&quot;)</code></pre>
+<pre><code>## # A tibble: 35 × 2
+##    name          hair_color
+##    &lt;chr&gt;         &lt;chr&gt;     
+##  1 Abomination   No Hair   
+##  2 Absorbing Man No Hair   
+##  3 Alien         No Hair   
+##  4 Annihilus     No Hair   
+##  5 Anti-Monitor  No Hair   
+##  6 Black Manta   No Hair   
+##  7 Bloodwraith   No Hair   
+##  8 Brainiac      No Hair   
+##  9 Darkseid      No Hair   
+## 10 Darth Vader   No Hair   
+## # … with 25 more rows</code></pre>
+<pre class="r"><code>good_guys %&gt;% 
+  select(name, hair_color) %&gt;% 
+  filter(hair_color == &quot;No Hair&quot;)</code></pre>
+<pre><code>## # A tibble: 37 × 2
+##    name            hair_color
+##    &lt;chr&gt;           &lt;chr&gt;     
+##  1 A-Bomb          No Hair   
+##  2 Abe Sapien      No Hair   
+##  3 Abin Sur        No Hair   
+##  4 Beta Ray Bill   No Hair   
+##  5 Bishop          No Hair   
+##  6 Black Lightning No Hair   
+##  7 Blaquesmith     No Hair   
+##  8 Bloodhawk       No Hair   
+##  9 Crimson Dynamo  No Hair   
+## 10 Donatello       No Hair   
+## # … with 27 more rows</code></pre>
+<p>#Good guys have more characters that have no hair (37 &gt; 35)</p>
+<ol start="10" style="list-style-type: decimal">
+<li>Let’s explore who the really “big” superheros are. In the
 <code>superhero_info</code> data, which have a height over 200 or weight
-greater than or equal to 450?</p></li>
-<li><p>Just to be clear on the <code>|</code> operator, have a look at
-the superheros over 300 in height…</p></li>
-<li><p>…and the superheros over 450 in weight. Bonus question! Why do we
-not have 16 rows in question #10?</p></li>
+greater than or equal to 450?</li>
 </ol>
-</div>
-<div id="height-to-weight-ratio" class="section level2">
-<h2>Height to Weight Ratio</h2>
-<ol start="13" style="list-style-type: decimal">
-<li>It’s easy to be strong when you are heavy and tall, but who is heavy
-and short? Which superheros have the highest height to weight
-ratio?</li>
+<pre class="r"><code>superhero_info %&gt;% 
+  select(name, height, weight) %&gt;% 
+  filter(height &gt; 200 | weight &gt;= 450)</code></pre>
+<pre><code>## # A tibble: 60 × 3
+##    name          height weight
+##    &lt;chr&gt;          &lt;dbl&gt;  &lt;dbl&gt;
+##  1 A-Bomb           203    441
+##  2 Abomination      203    441
+##  3 Alien            244    169
+##  4 Amazo            257    173
+##  5 Ant-Man          211    122
+##  6 Anti-Venom       229    358
+##  7 Apocalypse       213    135
+##  8 Bane             203    180
+##  9 Beta Ray Bill    201    216
+## 10 Bloodaxe         218    495
+## # … with 50 more rows</code></pre>
+<ol start="11" style="list-style-type: decimal">
+<li>Just to be clear on the <code>|</code> operator, have a look at the
+superheros over 300 in height…</li>
 </ol>
+<pre class="r"><code>superhero_info %&gt;% 
+  select(name, height) %&gt;% 
+  filter(height &gt; 300)</code></pre>
+<pre><code>## # A tibble: 8 × 2
+##   name          height
+##   &lt;chr&gt;          &lt;dbl&gt;
+## 1 Fin Fang Foom   975 
+## 2 Galactus        876 
+## 3 Groot           701 
+## 4 MODOK           366 
+## 5 Onslaught       305 
+## 6 Sasquatch       305 
+## 7 Wolfsbane       366 
+## 8 Ymir            305.</code></pre>
+<ol start="12" style="list-style-type: decimal">
+<li>…and the superheros over 450 in weight. Bonus question! Why do we
+not have 16 rows in question #10?</li>
+</ol>
+<pre class="r"><code>superhero_info %&gt;% 
+  select(name, weight) %&gt;% 
+  filter(weight &gt;= 450)</code></pre>
+<pre><code>## # A tibble: 8 × 2
+##   name       weight
+##   &lt;chr&gt;       &lt;dbl&gt;
+## 1 Bloodaxe      495
+## 2 Darkseid      817
+## 3 Giganta       630
+## 4 Hulk          630
+## 5 Juggernaut    855
+## 6 Red Hulk      630
+## 7 Sasquatch     900
+## 8 Wolfsbane     473</code></pre>
+<p>#Because of the or option there are a lot more characters that fall
+into the qualification. It also looked like some NA’s slipped through.
+## Height to Weight Ratio 13. It’s easy to be strong when you are heavy
+and tall, but who is heavy and short? Which superheros have the highest
+height to weight ratio?</p>
+<pre class="r"><code>superhero_info %&gt;% 
+  select(name, height, weight) %&gt;% 
+  mutate(height_weight_ratio = height/weight) %&gt;% 
+  arrange(desc(height/weight))</code></pre>
+<pre><code>## # A tibble: 734 × 4
+##    name            height weight height_weight_ratio
+##    &lt;chr&gt;            &lt;dbl&gt;  &lt;dbl&gt;               &lt;dbl&gt;
+##  1 Groot              701      4              175.  
+##  2 Galactus           876     16               54.8 
+##  3 Fin Fang Foom      975     18               54.2 
+##  4 Longshot           188     36                5.22
+##  5 Jack-Jack           71     14                5.07
+##  6 Rocket Raccoon     122     25                4.88
+##  7 Dash               122     27                4.52
+##  8 Howard the Duck     79     18                4.39
+##  9 Swarm              196     47                4.17
+## 10 Yoda                66     17                3.88
+## # … with 724 more rows</code></pre>
 </div>
 <div id="superhero_powers" class="section level2">
 <h2><code>superhero_powers</code></h2>
@@ -1872,12 +2170,42 @@ frame.</p>
 <li>How many superheros have a combination of accelerated healing,
 durability, and super strength?</li>
 </ol>
+<pre class="r"><code>superhero_powers %&gt;% 
+  select(hero_names, accelerated_healing, durability, super_strength) %&gt;% 
+  filter(accelerated_healing == &quot;TRUE&quot; &amp; durability == &quot;TRUE&quot; &amp; super_strength == &quot;TRUE&quot;)</code></pre>
+<pre><code>## # A tibble: 97 × 4
+##    hero_names   accelerated_healing durability super_strength
+##    &lt;chr&gt;        &lt;lgl&gt;               &lt;lgl&gt;      &lt;lgl&gt;         
+##  1 A-Bomb       TRUE                TRUE       TRUE          
+##  2 Abe Sapien   TRUE                TRUE       TRUE          
+##  3 Angel        TRUE                TRUE       TRUE          
+##  4 Anti-Monitor TRUE                TRUE       TRUE          
+##  5 Anti-Venom   TRUE                TRUE       TRUE          
+##  6 Aquaman      TRUE                TRUE       TRUE          
+##  7 Arachne      TRUE                TRUE       TRUE          
+##  8 Archangel    TRUE                TRUE       TRUE          
+##  9 Ardina       TRUE                TRUE       TRUE          
+## 10 Ares         TRUE                TRUE       TRUE          
+## # … with 87 more rows</code></pre>
 </div>
 <div id="your-favorite" class="section level2">
 <h2>Your Favorite</h2>
 <ol start="15" style="list-style-type: decimal">
 <li>Pick your favorite superhero and let’s see their powers!</li>
 </ol>
+<pre class="r"><code>superhero_powers %&gt;% 
+  filter(hero_names == &quot;Moon Knight&quot;)</code></pre>
+<pre><code>## # A tibble: 1 × 168
+##   hero_…¹ agility accel…² lante…³ dimen…⁴ cold_…⁵ durab…⁶ stealth energ…⁷ flight
+##   &lt;chr&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt; 
+## 1 Moon K… FALSE   FALSE   FALSE   FALSE   FALSE   FALSE   FALSE   FALSE   FALSE 
+## # … with 158 more variables: danger_sense &lt;lgl&gt;, underwater_breathing &lt;lgl&gt;,
+## #   marksmanship &lt;lgl&gt;, weapons_master &lt;lgl&gt;, power_augmentation &lt;lgl&gt;,
+## #   animal_attributes &lt;lgl&gt;, longevity &lt;lgl&gt;, intelligence &lt;lgl&gt;,
+## #   super_strength &lt;lgl&gt;, cryokinesis &lt;lgl&gt;, telepathy &lt;lgl&gt;,
+## #   energy_armor &lt;lgl&gt;, energy_blasts &lt;lgl&gt;, duplication &lt;lgl&gt;,
+## #   size_changing &lt;lgl&gt;, density_control &lt;lgl&gt;, stamina &lt;lgl&gt;,
+## #   astral_travel &lt;lgl&gt;, audio_control &lt;lgl&gt;, dexterity &lt;lgl&gt;, …</code></pre>
 </div>
 <div id="push-your-final-code-to-github" class="section level2">
 <h2>Push your final code to GitHub!</h2>
