@@ -74,7 +74,7 @@ levels(hot_springs$scientist)
 
 
 ```{r}
-
+levels
 ```
 
 ## Practice

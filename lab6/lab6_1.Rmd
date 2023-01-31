@@ -80,8 +80,8 @@ hist(msleep24$sleep_total_24)
 Don't forget we can also use `tabyl()` across one or many variables.
 ```{r}
 msleep24 %>% 
-  tabyl(vore) %>% 
-  adorn_pct_formatting(digits=1)
+  tabyl(vore) 
+ adorn_pct_formatting(digits=1)
 ```
 
 ## Practice
