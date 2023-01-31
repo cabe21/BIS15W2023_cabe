@@ -35,7 +35,7 @@ Wikipedia's definition of [data science](https://en.wikipedia.org/wiki/Data_scie
 In the midterm 1 folder there is a second folder called `data`. Inside the `data` folder, there is a .csv file called `ElephantsMF`. These data are from Phyllis Lee, Stirling University, and are related to Lee, P., et al. (2013), "Enduring consequences of early experiences: 40-year effects on survival and success among African elephants (Loxodonta africana)," Biology Letters, 9: 20130011. [kaggle](https://www.kaggle.com/mostafaelseidy/elephantsmf).  
 
 3. (2 points) Please load these data as a new object called `elephants`. Use the function(s) of your choice to get an idea of the structure of the data. Be sure to show the class of each variable.
-
+elphants <- readr: read.csv 
 
 4. (2 points) Change the names of the variables to lower case and change the class of the variable `sex` to a factor.
 
